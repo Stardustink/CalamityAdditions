@@ -1,0 +1,13 @@
+Biomes: {
+	ProfanedGully: {
+		DisplayName: Profaned Gully
+		TownNPCDialogueName: the Profaned Gully
+	}
+}
+
+Items: {
+	ProfanedBiomeDebug: {
+		DisplayName: Profaned Biome Debug
+		Tooltip: ""
+	}
+}
