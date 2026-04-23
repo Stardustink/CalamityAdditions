@@ -1,4 +1,4 @@
 displayName = Calamity: Additions
 author = Ink, Bread
 version = 0.1
-modReferences = CalamityMod
+modReferences = CalamityMod, BreadLibrary, Luminance

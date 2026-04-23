@@ -1,4 +1,10 @@
 ﻿<Project Sdk="Tomat.Terraria.ModLoader.Sdk/2.0.0">
+	
+	<PropertyGroup>
+		<LangVersion>preview</LangVersion>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
@@ -7,10 +13,15 @@
 	<PropertyGroup>
 		
 	</PropertyGroup>
-
-	<!-- References -->
 	<ItemGroup>
-	  <Folder Include="Assets\" />
+	  <Folder Include="Core\Utilities\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<DoNotPublicize Include="tModLoader:Terraria.Tile" />
+		<Publicize Include="CalamityMod" />
+		<Publicize Include="FNA" IncludeCompilerGeneratedMembers="false" IncludeVirtualMembers="false" />
+		<Publicize Include="ReLogic" IncludeCompilerGeneratedMembers="false" IncludeVirtualMembers="false" />
 	</ItemGroup>
 
 </Project>

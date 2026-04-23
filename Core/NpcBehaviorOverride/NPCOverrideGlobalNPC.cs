@@ -100,6 +100,10 @@ namespace CalamityAdditions.Core.NpcBehaviorOverride
             GetOverride(npc)?.OnHitByProjectile(npc, projectile, hit, damageDone);
         }
 
+        public override void ModifyIncomingHit(NPC NPC, ref NPC.HitModifiers modifiers)
+        {
+            GetOverride(NPC)?.ModifyIncomingHit(NPC, ref modifiers);
+        }
         public override bool ModifyCollisionData(NPC npc, Rectangle victimHitbox, ref int immunityCooldownSlot, ref MultipliableFloat damageMultiplier, ref Rectangle npcHitbox)
         {
 

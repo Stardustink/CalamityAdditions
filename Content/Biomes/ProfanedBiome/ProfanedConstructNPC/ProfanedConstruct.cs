@@ -1,6 +1,7 @@
 ﻿
 
 
+using BreadLibrary.Core.Graphics.Pixelation;
 using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 
@@ -100,7 +101,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             NPC.lifeMax = 90_000;
             ///since NPC.width and npc.height are used to create a <see cref="Rectangle"/>,
             /// we can just pass in a <see cref="Vector2"/> for the size in this parameter, and skip the tedium of writing NPC.width = 40 and NPC.Height = 40.
-            NPC.Size = new(40, 50);
+            NPC.Size = new(40, 80);
 
             NPC.noGravity = true;
             NPC.GravityMultiplier *= 0.2f;
@@ -139,8 +140,11 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         public override void PostAI()
         {
             Levitate();
-            //if (Main.LocalPlayer.controlUseItem)
-            //    TargetPos = Main.MouseWorld;
+            ProfanedConstruct_Particle particle = ProfanedConstruct_Particle.Pool.RequestParticle();
+            particle.Prepare(NPC.Bottom + Vector2.UnitY * -20, Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(20 + NPC.velocity.LengthSquared())) * 4, 40);
+            ParticleEngine.Particles.Add(particle);
+            if (Main.LocalPlayer.controlUseItem)
+                TargetPos = Main.MouseWorld;
         }
         #endregion
 
@@ -294,7 +298,6 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             if (moveAmount == float.NaN)
                 moveAmount = 0;
 
-            Main.NewText(moveAmount);
             NPC.position.Y -= moveAmount;
             NPC.noGravity = true;
             NPC.velocity.Y *= 0f;
