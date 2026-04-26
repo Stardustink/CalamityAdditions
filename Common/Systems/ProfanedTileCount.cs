@@ -14,6 +14,7 @@ namespace CalamityAdditions.Common.Systems
             ProfanedTileCount = tileCounts[ModContent.TileType<ProfanedRock>()];
 
             ProfanedTileCount += tileCounts[ModContent.TileType<ProfanedCrystal>()];
+
         }
     }
 }

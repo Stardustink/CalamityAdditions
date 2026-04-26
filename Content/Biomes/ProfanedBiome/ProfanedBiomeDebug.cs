@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityMod.Tiles.FurnitureProfaned;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,10 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome
             // Convert player world position to tile position.
             Point tilePos = player.Center.ToTileCoordinates();
 
-            // Example: place slightly below the player.
             int centerX = tilePos.X;
             int centerY = tilePos.Y + 10;
 
-            bool success = ProfanedBiomePlacer.PlaceHellRock(centerX, centerY, 48, 18);
+            bool success = ProfanedWorldGen.ProfanedAshFormationPlacer.TryPlaceFormation(centerX, centerY, 700, 300, (ushort)ModContent.TileType<ProfanedRock>(), TileID.Ash);
 
 
         }

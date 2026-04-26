@@ -12,6 +12,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         // This is perfect for textures, since we only need to load it once and can share it across all particles.
         public static Asset<Texture2D> Texture;
 
+        public Dictionary<int, Asset<Texture2D>> textures;
         /// <summary>
         /// runs once.
         /// </summary>
@@ -68,14 +69,15 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
 
             Progress = 1f - (TimeLeft / MaxTimeLeft);
             Rotation = Main.rand.NextFloat(0, MathHelper.Pi);
+
         }
 
         public override void Update(ref ParticleRendererSettings settings)
         {
             Progress = 1f - (TimeLeft / MaxTimeLeft);
-           
-            Position += Velocity;
-            Velocity *= 0.91f; // Apply some drag to slow down the particle over time.
+
+            Position += Collision.TileCollision(Position, Velocity, 4, 4);
+            Velocity *= 0.9f; // Apply some drag to slow down the particle over time.
 
             //roughly equivelant to 
             //int oldValue = TimeLeft;
@@ -93,7 +95,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
 
         private Color ColorFunction(float Progress)
         {
-            return Color.Lerp(Color.Firebrick, Color.DarkOrange, Progress);
+            return Color.Lerp(Color.Firebrick with {  R = 220}, Color.DarkOrange, Progress);
         }
         public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
         {
@@ -105,17 +107,15 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             float rot = Rotation+Velocity.ToRotation();
 
             spritebatch.End();
-            spritebatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null,
+            spritebatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null,
                     Matrix.CreateScale(1f / PixelationSystem.PixelScale, 1f / PixelationSystem.PixelScale, 1f));
 
 
-            float scale = CalamityUtils.PolyInEasing(Progress, 1);
+            float scale = CalamityUtils.PolyInOutEasing(Progress, 1);
             var Dissolve = GameShaders.Misc["CalamityAdditions:DirectionalDissolve"];
-
-
             Dissolve.SetShaderTexture(Texture, 0);
 
-            Dissolve.SetShaderTexture(Assets.Textures.Noise.T_DisplacePatternBlur020.Asset, 1);
+            Dissolve.SetShaderTexture(Assets.Textures.Noise.T_VoronoiNoise001.Asset, 1);
             Dissolve.Shader.Parameters["dissolveProgress"].SetValue(Progress);
             Dissolve.Shader.Parameters["edgeWidth"].SetValue(0.4f);
 
@@ -129,8 +129,8 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             Dissolve.Shader.Parameters["noiseStrength"].SetValue(1-Progress);
             Dissolve.Shader.Parameters["gradientStrength"].SetValue(1-Progress);
 
-            //Dissolve.Apply();
-            Main.EntitySpriteDraw(Tex, drawPos, null, ColorFunction(Progress * 0.5f), rot, origin, scale * 0.1f, 0);
+            Dissolve.Apply();
+            Main.EntitySpriteDraw(Tex, drawPos, null, ColorFunction(Progress * 0.5f), rot, origin, scale * 0.151f, 0);
             
 
 

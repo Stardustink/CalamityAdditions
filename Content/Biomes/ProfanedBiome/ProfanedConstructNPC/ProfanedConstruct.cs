@@ -17,6 +17,8 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         /// Since this is static, we only should set it once, as static means that every instance of this class, will share that same value.</remarks>
         public static Asset<Texture2D> GlowTex;
 
+        public static Asset<Texture2D> GlowBlurTex;
+
         /// <summary>
         /// an internal timer that ticks up continuously.
         /// </summary>
@@ -81,6 +83,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             ///this is because <see cref="ModContent.Request{T}(string, AssetRequestMode)"/> looks in the filepath for the value, and <see cref="Utilities.GetPath(object)"/> converts it into a proper filepath.
             string Path = this.GetPath();
             GlowTex = ModContent.Request<Texture2D>(Path + "_Glow");
+            GlowBlurTex = ModContent.Request<Texture2D>(Path + "_Glow_Blur");
         }
         public override void SetStaticDefaults()
         {
@@ -141,10 +144,21 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         {
             Levitate();
             ProfanedConstruct_Particle particle = ProfanedConstruct_Particle.Pool.RequestParticle();
-            particle.Prepare(NPC.Bottom + Vector2.UnitY * -20, Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(20 + NPC.velocity.LengthSquared())) * 4, 40);
+            particle.Prepare(NPC.Bottom + Vector2.UnitY * -20, Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(20 + NPC.velocity.LengthSquared())) * 5, 40);
             ParticleEngine.Particles.Add(particle);
             if (Main.LocalPlayer.controlUseItem)
                 TargetPos = Main.MouseWorld;
+        }
+        #endregion
+
+        #region Collision and stuff
+
+        public override void HitEffect(NPC.HitInfo hit)
+        {
+            ProfanedConstruct_Particle particle = ProfanedConstruct_Particle.Pool.RequestParticle();
+            particle.Prepare(NPC.Center + Vector2.UnitY * -20, Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(20 + NPC.velocity.LengthSquared())) * 4, 40);
+            ParticleEngine.Particles.Add(particle);
+
         }
         #endregion
 
@@ -334,6 +348,8 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
 
+            if (NPC.IsABestiaryIconDummy)
+                return base.PreDraw(spriteBatch, screenPos, drawColor);
             if (TargetPos != Vector2.Zero)
             {
                 Utils.DrawLine(spriteBatch, NPC.Center, TargetPos, Color.White);
@@ -373,7 +389,18 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
 
             Main.EntitySpriteDraw(Glow, drawPos, Frame, Color.White, Rot, Origin, Scale, Flip);
 
+            var GlowBlur = GlowBlurTex.Value;
 
+            spriteBatch.UseBlendState(BlendState.Additive);
+            Rectangle BlurFrame = GlowBlur.Frame(1, Main.npcFrameCount[Type] + 1, 0, NPC.frame.Y);
+            Vector2 BlurOrigin = BlurFrame.Size() / 2 + new Vector2(1 * -NPC.spriteDirection, -2);
+
+            for(int i = 0; i< 4; i++)
+            {
+
+                Main.EntitySpriteDraw(GlowBlur, drawPos + Vector2.UnitX.RotatedBy(i/4f * MathHelper.TwoPi + NPC.whoAmI + Main.GlobalTimeWrappedHourly), BlurFrame, Color.White*0.5f, Rot, BlurOrigin, Scale * 1.1f, Flip);
+            }
+            spriteBatch.UseBlendState(BlendState.AlphaBlend);
             //don't draw automatically, because we will need to do things behind this npc.
             return false;
         }
