@@ -6,3 +6,4 @@
 /.tml-build/TML.targets
 /bin/Debug/net8.0
 /obj
+/Assets/Effects/MetaballField.fx

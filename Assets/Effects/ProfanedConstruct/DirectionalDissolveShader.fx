@@ -13,9 +13,9 @@ float directionalStrength;
 float noiseStrength;
 float gradientStrength;
 
-float4 MainPS(float2 uv : TEXCOORD0) : COLOR
+float4 MainPS(float2 uv : TEXCOORD0, float4 drawColor : COLOR0) : COLOR
 {
-    float4 texColor = tex2D(uImage0, uv);
+    float4 texColor = tex2D(uImage0, uv) * drawColor;
 
     //todo: account for the drawn color of the texture
     if (texColor.a <= 0.001f)
