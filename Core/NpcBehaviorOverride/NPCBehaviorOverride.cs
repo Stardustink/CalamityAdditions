@@ -94,7 +94,10 @@ namespace CalamityAdditions.Core.NpcBehaviorOverride
         public virtual void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
         }
-
+        public virtual void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
+        {
+           
+        }
         #endregion
 
         #region DrawCode
