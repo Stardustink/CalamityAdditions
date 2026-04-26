@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedEnergyOverride
+namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ScornEaterOverride
 {
-    internal class ProfanedEnergy : NPCBehaviorOverride
+    internal class ScornEater : NPCBehaviorOverride
     {
-        public override int NPCType => ModContent.NPCType<ProfanedEnergyBody>();
+        public override int NPCType => ModContent.NPCType<CalamityMod.NPCs.NormalNPCs.ScornEater>();
 
         public override void SetDefaults(NPC NPC)
         {
@@ -37,7 +37,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedEnergyOverride
         public enum State
         {
             debug,
-            patrol,
+            roam,
             chase
         }
 
