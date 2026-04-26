@@ -67,7 +67,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         public State CurrentState
         {
             get => (State)NPC.ai[1];
-            set => NPC.ai[0] = (int)value;
+            set => NPC.ai[1] = (int)value;
         }
 
         public bool ShouldBeLevitating = true;
@@ -108,8 +108,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
 
             NPC.noGravity = true;
             NPC.GravityMultiplier *= 0.2f;
-            NPC.buffImmune[ModContent.BuffType<HolyFlames>()] = true;
-            NPC.lavaImmune = true;
+            NPC.Profaned().IsProfaned = true;
         }
         #endregion
 
@@ -127,9 +126,10 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
 
         public override void AI()
         {
+            CurrentState = State.Patrol;
             StateMachine();
 
-
+            
             NPC.direction = NPC.velocity.X.DirectionalSign();
             NPC.spriteDirection = NPC.direction;
             //Call this last, since updating the timer should be the last action the NPC takes.
@@ -180,9 +180,6 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
                     ManagePatrol();
                     break;
 
-                default:
-                    CurrentState = State.Debug;
-                    break;
             }
         }
 
@@ -198,6 +195,8 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         private void ManagePatrol()
         {
 
+            Player Player;
+            Player = Main.player[NPC.FindClosestPlayer()];
         }
 
 
@@ -207,7 +206,9 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
                 return;
 
             //Total distance in WorldCoordinates that this NPC should check down.
-            float maxCheck = 170f;
+            float maxCheck = 170f +
+                (NPC.Center.Y - TargetPos.Y);
+            ;
             int hitCount = 0;
             float accumulatedHeight = 0f;
 
@@ -294,7 +295,11 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             float BobIntensity = NPC.velocity.LengthSquared();
             BobIntensity = MathHelper.SmoothStep(1, 0, BobIntensity);
             //right now, this is just adjusted by the velocity of the npc. this works just fine, except it looks a bit odd and is a bit janky.
-            float desiredHeight = 100f + MathF.Sin(CosmeticTime * 0.05f + NPC.whoAmI) * 10 * BobIntensity;
+            float desiredHeight =
+              (NPC.Center.Y - TargetPos.Y);
+
+
+                //100f + MathF.Sin(CosmeticTime * 0.05f + NPC.whoAmI) * 10 * BobIntensity;
 
             float error = desiredHeight - actualHeight;
 
@@ -402,6 +407,9 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             }
             spriteBatch.UseBlendState(BlendState.AlphaBlend);
             //don't draw automatically, because we will need to do things behind this npc.
+
+
+            Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), NPC.Center - Main.screenPosition, Color.White);
             return false;
         }
         #endregion
