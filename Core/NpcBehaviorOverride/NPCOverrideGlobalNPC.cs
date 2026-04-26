@@ -6,6 +6,7 @@ namespace CalamityAdditions.Core.NpcBehaviorOverride
 {
     public sealed class NPCOverrideGlobalNPC : GlobalNPC
     {
+      
         public override bool InstancePerEntity => true;
 
         public bool SuppressOriginalPostDrawThisFrame = true;

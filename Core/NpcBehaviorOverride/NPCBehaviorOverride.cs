@@ -57,10 +57,7 @@ namespace CalamityAdditions.Core.NpcBehaviorOverride
 
         #region SpawnStuff
 
-        public virtual void OnSpawn(NPC NPC, IEntitySource source)
-        {
-
-        }
+        public virtual bool OnSpawn(NPC NPC, IEntitySource source) => false;
 
 
         public virtual void SpawnNPC(int npc, int tileX, int tileY)

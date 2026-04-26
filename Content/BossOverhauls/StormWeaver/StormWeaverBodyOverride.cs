@@ -24,7 +24,7 @@ namespace CalamityAdditions.Content.BossOverhauls.StormWeaver
         {
             NPCID.Sets.MustAlwaysDraw[NPCType] = true;
         }
-        public override void OnSpawn(NPC NPC, IEntitySource source)
+        public override bool OnSpawn(NPC NPC, IEntitySource source)
         {
             if (source is not null && source is EntitySource_Parent parentSource && parentSource.Entity is NPC parentNPC && parentNPC.type == ModContent.NPCType<StormWeaverHead>())
             {
@@ -38,6 +38,7 @@ namespace CalamityAdditions.Content.BossOverhauls.StormWeaver
                 }
             }
 
+            return false;
         }
 
         public override void SetDefaults(NPC NPC)
