@@ -67,7 +67,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         public State CurrentState
         {
             get => (State)NPC.ai[1];
-            set => NPC.ai[0] = (int)value;
+            set => NPC.ai[1] = (int)value;
         }
 
         public bool ShouldBeLevitating = true;
@@ -110,6 +110,7 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
             NPC.GravityMultiplier *= 0.2f;
             NPC.buffImmune[ModContent.BuffType<HolyFlames>()] = true;
             NPC.lavaImmune = true;
+            NPC.knockBackResist = 0.1f;
         }
         #endregion
 
@@ -179,10 +180,6 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
                 case State.Patrol:
                     ManagePatrol();
                     break;
-
-                default:
-                    CurrentState = State.Debug;
-                    break;
             }
         }
 
@@ -193,11 +190,29 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         {
             float thing = NPC.DistanceSQ(TargetPos) * 0.0005f;
             NPC.velocity.X = NPC.DirectionTo(TargetPos).X * MathHelper.SmoothStep(0, 4, thing);
+
+            CurrentState = State.Patrol;
         }
 
         private void ManagePatrol()
         {
+            TargetPos = NPC.Center + Vector2.UnitX * 10;
 
+            float thing = NPC.DistanceSQ(TargetPos) * 0.0005f;
+
+            Player Player;
+
+            Player = Main.player[NPC.FindClosestPlayer()];
+
+            if (Player != null)
+            {
+                if (Player.Distance(NPC.Center) < 400)
+                {
+                    TargetPos = Player.Center;
+                }
+            }
+
+            NPC.velocity.X = NPC.DirectionTo(TargetPos).X * MathHelper.SmoothStep(1, 4, thing);
         }
 
 
