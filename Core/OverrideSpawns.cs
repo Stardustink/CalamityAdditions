@@ -10,7 +10,6 @@ namespace CalamityAdditions.Core
 {
     internal class OverrideSpawns : GlobalNPC
     {
-
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
             Player Player = spawnInfo.Player;
