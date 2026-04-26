@@ -1,5 +1,4 @@
-﻿using CalamityAdditions.Common.IK;
-using CalamityAdditions.Core.NpcBehaviorOverride;
+﻿using CalamityAdditions.Core.NpcBehaviorOverride;
 using CalamityMod;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.StormWeaver;
