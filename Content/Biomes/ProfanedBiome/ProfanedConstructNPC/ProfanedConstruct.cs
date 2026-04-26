@@ -179,7 +179,6 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
                 case State.Patrol:
                     ManagePatrol();
                     break;
-
             }
         }
 
@@ -190,13 +189,29 @@ namespace CalamityAdditions.Content.Biomes.ProfanedBiome.ProfanedConstructNPC
         {
             float thing = NPC.DistanceSQ(TargetPos) * 0.0005f;
             NPC.velocity.X = NPC.DirectionTo(TargetPos).X * MathHelper.SmoothStep(0, 4, thing);
+
+            CurrentState = State.Patrol;
         }
 
         private void ManagePatrol()
         {
+            TargetPos = NPC.Center + Vector2.UnitX * 10;
+
+            float thing = NPC.DistanceSQ(TargetPos) * 0.0005f;
 
             Player Player;
+
             Player = Main.player[NPC.FindClosestPlayer()];
+
+            if (Player != null)
+            {
+                if (Player.Distance(NPC.Center) < 400)
+                {
+                    TargetPos = Player.Center;
+                }
+            }
+
+            NPC.velocity.X = NPC.DirectionTo(TargetPos).X * MathHelper.SmoothStep(1, 4, thing);
         }
 
 
